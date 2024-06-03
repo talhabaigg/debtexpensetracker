@@ -36,7 +36,7 @@ defineProps({
             </div>
                 <div class="mt-2 relative overflow-x-auto mx-auto max-w-6xl rounded-lg hidden sm:block ">
                 <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 ">
-                    <thead class="text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <thead class="text-xs text-gray-200 bg-gray-900 dark:bg-gray-900 dark:text-gray-400">
                         <tr>
                             <th scope="col" class="px-6 py-3">Name</th>
                             <th scope="col" class="px-6 py-3">Amount</th>
@@ -47,9 +47,9 @@ defineProps({
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="debt in debts" :key="debt.id" class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                        <tr v-for="debt in debts" :key="debt.id" class="bg-white dark:bg-gray-900 border-b dark:border-gray-700">
                             <Link :href="route('debts.show',debt.id)">
-                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ debt.debt_name }}</th>
+                                <th scope="row" class="px-6 py-4 font-medium ont-medium text-blue-600 dark:text-blue-500 whitespace-nowrap hover:text-blue-900 hover:underline">{{ debt.debt_name }}</th>
                             </Link>
                             <DollarValue :amount="debt.debt_amount" />
                             <span v-if="debt.remaining_balance === 0" class="px-6 py-4 text-green-700 dark:text-green-400">Paid</span>

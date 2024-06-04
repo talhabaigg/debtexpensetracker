@@ -85,7 +85,8 @@ const submitFormandCloseModal = () => {
           <div class="min-w-0">
             <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">$ {{debt.debt_amount}}</h5>
             <p class="font-normal text-gray-700 dark:text-gray-400 truncate">{{debt.debt_supplier}}</p>
-            <span v-if="debt.remaining_balance === 0" class="text-green-700 dark:text-green-400">Paid</span>
+            
+            <span v-if="Number(debt.remaining_balance) === 0" class="text-green-700 dark:text-green-400">Paid</span>
             <p v-else class="font-normal text-gray-700 dark:text-gray-400">Balance <span><DollarValue :amount="debt.remaining_balance" class="font-normal text-red-700 dark:text-red-400" /></span></p>
           </div>
           <div class="block sm:hidden">

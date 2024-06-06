@@ -33,11 +33,13 @@ class PaymentController extends Controller
             'debt_id' => 'required|exists:debts,id',
             'payment_amount' => 'required|numeric',
             'paid_at' => 'required|date',
+            'type' => 'required',
             'balance' => 'required|numeric',
         ]);
+        // dd($validatedData);
 
        // Add the fixed 'type' value
-        $validatedData['type'] = 'Repayment';
+        // $validatedData['type'] = 'Repayment';
 
         // Fetch the debt
         $debt = Debt::findOrFail($request->debt_id);

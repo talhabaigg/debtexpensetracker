@@ -86,7 +86,7 @@ const submitFormandCloseModal = () => {
             <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">$ {{debt.debt_amount}}</h5>
             <p class="font-normal text-gray-700 dark:text-gray-400 truncate">{{debt.debt_supplier}}</p>
             
-            <span v-if="Number(debt.remaining_balance) === 0" class="text-green-700 dark:text-green-400">Paid</span>
+            <span v-if="Number(debt.remaining_balance) === 0" class="text-white dark:text-green-400 bg-green-700 rounded-lg  px-4 py-1">Paid</span>
             <p v-else class="font-normal text-gray-700 dark:text-gray-400">Balance <span><DollarValue :amount="debt.remaining_balance" class="font-normal text-red-700 dark:text-red-400" /></span></p>
           </div>
           <div class="block sm:hidden">
@@ -133,6 +133,8 @@ const submitFormandCloseModal = () => {
                 <select v-model="form.type" id="category" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                   <option selected="">Select category</option>
                   <option value="Repayment">Repayment</option>
+                  <option value="Interest">Interest</option>
+                  <option value="Redraw">Redraw</option>
                 </select>
               </div>
               <!-- <div class="col-span-2">
@@ -208,7 +210,10 @@ const submitFormandCloseModal = () => {
             <tr v-for="payment in debt.payments" :key="payment.id" class="bg-white dark:bg-gray-900 border-b dark:border-gray-700">
               <td v-if="payment.payment_amount < 0" class="text-red-700 dark:text-green-400"><DollarValue :amount="payment.payment_amount" /></td>
               <td v-else ><DollarValue :amount="payment.payment_amount" /></td>
-              <td class="px-6 py-4">{{ payment.type }}</td>
+              <td class="px-6 py-4"> 
+                <span v-if=" payment.type === 'Repayment'" class=" text-white dark:text-green-400 bg-green-700 rounded-lg  px-2 py-1">{{ payment.type }}</span>
+                <span v-else  class=" text-white  bg-red-700 rounded-lg  px-2 py-1">{{ payment.type }}</span>
+              </td>
               <td><DateDisplay :date="payment.paid_at" /></td>
               <DollarValue :amount="payment.balance" />
             </tr>

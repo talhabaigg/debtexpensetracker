@@ -11,7 +11,9 @@ import InputError from '@/Components/InputError.vue';
 import { computed } from 'vue';
 import DateDisplay from '@/Components/DateDisplay.vue';
 import { ref } from 'vue';
+import ProgressBar from '@/Components/ProgressBar.vue'; 
 
+import { usePercentageComplete } from '@/Composables/usePercentageComplete';
 // Reactive variable to control form visibility
 const showForm = ref(false);
 const isModalVisible = ref(false);
@@ -43,7 +45,9 @@ const balance = computed(() => {
   const paymentAmount = parseFloat(form.payment_amount);
   return (debtAmount - paymentAmount).toFixed(2);
 });
-
+const percentageComplete = (debt) => {
+  return usePercentageComplete(debt.debt_amount, debt.remaining_balance);
+};
 // Function to create a new payment
 const createPayment = () => {
   form.balance = balance;
@@ -85,9 +89,9 @@ const submitFormandCloseModal = () => {
           <div class="min-w-0">
             <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">$ {{debt.debt_amount}}</h5>
             <p class="font-normal text-gray-700 dark:text-gray-400 truncate">{{debt.debt_supplier}}</p>
+            <ProgressBar :percentage="percentageComplete(debt)" />
+            <p>${{ debt.remaining_balance }} remaining out of ${{ debt.debt_amount}}</p>
             
-            <span v-if="Number(debt.remaining_balance) === 0" class="text-white dark:text-green-400 bg-green-700 rounded-lg  px-4 py-1">Paid</span>
-            <p v-else class="font-normal text-gray-700 dark:text-gray-400">Balance <span><DollarValue :amount="debt.remaining_balance" class="font-normal text-red-700 dark:text-red-400" /></span></p>
           </div>
           <div class="block sm:hidden">
             <!-- Button to toggle the form visibility -->

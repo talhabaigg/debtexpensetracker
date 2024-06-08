@@ -5,6 +5,8 @@ import DollarValue from '@/Components/DollarValue.vue'; // Adjust the path as ne
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { ref, computed } from 'vue';
 import PieChart from '@/Components/PieChart.vue';
+import { usePercentageComplete } from '@/Composables/usePercentageComplete';
+import ProgressBar from '@/Components/ProgressBar.vue'; // Corrected import statement
 
 const props = defineProps({
   debts: {
@@ -28,10 +30,7 @@ const totalDebt = computed(() => {
 });
 
 const percentageComplete = (debt) => {
-  if (debt.debt_amount === 0) {
-    return 0;
-  }
-  return ((debt.debt_amount - debt.remaining_balance) / debt.debt_amount) * 100;
+  return usePercentageComplete(debt.debt_amount, debt.remaining_balance);
 };
 
 // Computed property to filter debts based on search query
@@ -120,12 +119,9 @@ const nextPage = () => {
               <td class="px-6 py-2">
                
                 <span v-if="Number(debt.remaining_balance) === 0" class="text-white dark:text-green-400 bg-green-700 rounded-lg px-4 py-1">Paid</span>
-                <div v-else >
-                  <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-                    <div class="bg-blue-600 h-2.5 rounded-full" :style="{ width: percentageComplete(debt) + '%' }"></div>
-                  </div>
+                <div v-else>
+                  <ProgressBar :percentage="percentageComplete(debt)" />
                   <p>${{ debt.remaining_balance }} remaining out of ${{ debt.debt_amount}}</p>
-                 
                 </div>
                 
               </td>
@@ -145,12 +141,9 @@ const nextPage = () => {
             <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">$ {{ debt.debt_amount }}</h5>
             <p class="font-normal text-gray-700 dark:text-gray-400 truncate">{{ debt.debt_supplier }}</p>
             <span v-if="Number(debt.remaining_balance) === 0" class="text-white p-2 dark:text-green-400 bg-green-700 rounded-lg px-2 py-1">Paid</span>
-            <div v-else >
-              <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-                <div class="bg-blue-600 h-2.5 rounded-full" :style="{ width: percentageComplete(debt) + '%' }"></div>
-              </div>
+            <div v-else>
+              <ProgressBar :percentage="percentageComplete(debt)" />
               <p>${{ debt.remaining_balance }} remaining out of ${{ debt.debt_amount}}</p>
-             
             </div>
           </div>
           <Link 

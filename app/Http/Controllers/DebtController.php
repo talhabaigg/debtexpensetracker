@@ -19,7 +19,10 @@ class DebtController extends Controller
         
         // Return the Inertia.js page with the debts data
         return Inertia::render('Debt/Index', [
-            'debts' => $debts
+            'debts' => $debts,
+            // 'flash' => [
+            //     'success' => 'Page loaded successfully'
+            // ],
         ]);
        
     }
@@ -46,7 +49,7 @@ class DebtController extends Controller
             'expected_end_date' => 'required|date|after_or_equal:debt_start_date',
         ]));
 
-        return back()->with('success', 'Debt created successfully!');
+        return redirect()->route('debts.index')->with('success', 'Debt created successfully!');
     }
 
     /**

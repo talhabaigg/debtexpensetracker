@@ -1,19 +1,38 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
-import { Link } from '@inertiajs/vue3';
-
+import { Link , usePage} from '@inertiajs/vue3';
+import { computed } from 'vue';
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
 const showingNavigationDropdown = ref(false);
+
+const page = usePage();
+const flashSuccess = computed(() => page.props.flash.success);
+
+console.log(flashSuccess);
+const showToastSuccess = () => {
+  if (flashSuccess.value) {
+    toast.success(flashSuccess.value, {
+      autoClose: 5000, // Duration in milliseconds
+    });
+  }
+};
+
+onMounted(() => {
+    showToastSuccess();
+});
 </script>
 
 <template>
     <div>
         <div class="min-h-screen bg-gray-100">
             <nav class="bg-gray-900 border-b border-gray-100">
+                
                 <!-- Primary Navigation Menu -->
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="flex justify-between h-16">
@@ -145,14 +164,18 @@ const showingNavigationDropdown = ref(false);
             </nav>
 
             <!-- Page Heading -->
+            
             <header class="bg-white shadow" v-if="$slots.header">
                 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                     <slot name="header" />
                 </div>
             </header>
-
+            
             <!-- Page Content -->
             <main>
+                <div v-if="flashmes" class="mb-4 border rounded-md shadow-sm border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900 p-2">
+                    {{ flashmes }}
+                  </div>
                 <slot />
             </main>
         </div>

@@ -17,7 +17,7 @@ class DebtFactory extends Factory
     public function definition(): array
     {
         return [
-            'debt_name' => $this->faker->word,
+            'debt_name' => $this->faker->company,
             'debt_amount' => $this->faker->randomFloat(2, 500, 5000), // Random amount between 100 and 10,000
             'debt_supplier' => $this->faker->company,
             'debt_start_date' => $this->faker->dateTimeBetween('-2 years', 'now')->format('d-m-Y'),

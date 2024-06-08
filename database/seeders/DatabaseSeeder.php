@@ -30,8 +30,8 @@ class DatabaseSeeder extends Seeder
         //     $debt->update([
         //         'balance' => $debt->debt_amount - $paymentSum,
         //     ]);
-        Payment::factory(10)->create();
-        Debt::factory()->count(10)->create();
+        // Payment::factory(10)->create();
+        // Debt::factory()->count(1)->create();
 
     }
 }

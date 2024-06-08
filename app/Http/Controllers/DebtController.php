@@ -14,7 +14,7 @@ class DebtController extends Controller
      */
     public function index()
     {
-        $debts = Debt::with('payments')->get();
+        $debts = Debt::with('payments')->orderBy('remaining_balance', 'desc')->get();
         // Log the debt and its payments for debugging
         
         // Return the Inertia.js page with the debts data
@@ -45,6 +45,8 @@ class DebtController extends Controller
             'debt_start_date' => 'required|date',
             'expected_end_date' => 'required|date|after_or_equal:debt_start_date',
         ]));
+
+        return back()->with('success', 'Debt created successfully!');
     }
 
     /**

@@ -29,6 +29,8 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::resource('debts', DebtController::class);
     Route::resource('payment', PaymentController::class);
+
+  
 });
 
 require __DIR__.'/auth.php';

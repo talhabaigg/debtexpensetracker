@@ -5,7 +5,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
-import { useForm } from '@inertiajs/vue3';
+import { useForm, router } from '@inertiajs/vue3';
 
 const form = useForm({
     debt_name: '',
@@ -16,11 +16,16 @@ const form = useForm({
     expected_end_date: '',
 });
 
+const backtoDebts = () => {
+    router.visit(route('debts.index'));
+};
 const createDebt = () => {
-    
     form.post(route('debts.store'), {
         preserveScroll: true,
-        onSuccess: () => form.reset(),
+        onSuccess: () => {
+            form.reset();
+            backtoDebts();
+        },
     });
 };
 </script>

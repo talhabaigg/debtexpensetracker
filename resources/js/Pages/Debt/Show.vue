@@ -15,7 +15,7 @@ import ProgressBar from '@/Components/ProgressBar.vue';
 
 import { usePercentageComplete } from '@/Composables/usePercentageComplete';
 // Reactive variable to control form visibility
-const showForm = ref(false);
+
 const isModalVisible = ref(false);
 
 // Define the props the component will receive
@@ -94,11 +94,9 @@ const submitFormandCloseModal = () => {
             
           </div>
           <div class="block sm:hidden">
-            <!-- Button to toggle the form visibility -->
-            <button @click="showForm = !showForm" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Add Payment</button>
-           
+            
           </div>
-          <div class="hidden sm:block">
+          <div class="block">
             <button @click="toggleModal" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Add Payment</button>
           </div>
         </div>

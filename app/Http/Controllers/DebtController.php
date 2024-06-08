@@ -86,6 +86,12 @@ class DebtController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+
+        $debt = Debt::findOrFail($id);
+    // Delete the debt
+    $debt->delete();
+
+    // Return a response, typically redirecting back with a success message
+    return redirect()->route('debts.index')->with('warning', 'Debt deleted successfully.');
     }
 }

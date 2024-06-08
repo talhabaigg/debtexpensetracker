@@ -13,8 +13,10 @@ const showingNavigationDropdown = ref(false);
 
 const page = usePage();
 const flashSuccess = computed(() => page.props.flash.success);
+const flashWarning = computed(() => page.props.flash.warning);
 
 console.log(flashSuccess);
+console.log(flashWarning);
 const showToastSuccess = () => {
   if (flashSuccess.value) {
     toast.success(flashSuccess.value, {
@@ -23,8 +25,17 @@ const showToastSuccess = () => {
   }
 };
 
+const showToastWarn = () => {
+  if (flashWarning.value) {
+    toast.warn(flashWarning.value, {
+      autoClose: 5000, // Duration in milliseconds
+    });
+  }
+};
+
 onMounted(() => {
     showToastSuccess();
+    showToastWarn();
 });
 </script>
 

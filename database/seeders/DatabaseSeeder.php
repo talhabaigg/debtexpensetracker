@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory(1)->create();
+        // User::factory(1)->create();
 
         // Debt::factory(10)->create()->each(function ($debt) {
         //     $paymentSum = 0;
@@ -31,7 +31,7 @@ class DatabaseSeeder extends Seeder
         //         'balance' => $debt->debt_amount - $paymentSum,
         //     ]);
         // Payment::factory(10)->create();
-        // Debt::factory()->count(1)->create();
+        Debt::factory()->count(10)->create();
 
     }
 }

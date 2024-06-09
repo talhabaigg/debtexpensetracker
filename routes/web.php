@@ -4,6 +4,7 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\DebtController;
+use App\Http\Controllers\PaycheckController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 
@@ -29,6 +30,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::resource('debts', DebtController::class);
     Route::resource('payment', PaymentController::class);
+    Route::resource('paychecks', PaycheckController::class);
 
   
 });

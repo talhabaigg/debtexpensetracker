@@ -6,6 +6,7 @@ use App\Models\Debt;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\Payment;
+use App\Models\Paycheck;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -31,7 +32,8 @@ class DatabaseSeeder extends Seeder
         //         'balance' => $debt->debt_amount - $paymentSum,
         //     ]);
         // Payment::factory(10)->create();
-        Debt::factory()->count(10)->create();
+        // Debt::factory()->count(10)->create();
+        Paycheck::factory()->count(10)->create();
 
     }
 }

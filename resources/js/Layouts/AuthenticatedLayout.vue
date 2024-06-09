@@ -65,7 +65,12 @@ onMounted(() => {
                             </div>
                             <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink :href="route('debts.index')" :active="route().current('debts.index')">
-                                    Debt
+                                    Debts
+                                </NavLink>
+                            </div>
+                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                <NavLink :href="route('paychecks.index')" :active="route().current('paychecks.index')">
+                                    Paychecks
                                 </NavLink>
                             </div>
                         </div>

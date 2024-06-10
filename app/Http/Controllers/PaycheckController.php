@@ -32,7 +32,7 @@ class PaycheckController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Paycheck/Create');
     }
 
     /**

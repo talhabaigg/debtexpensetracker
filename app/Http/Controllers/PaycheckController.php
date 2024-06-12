@@ -40,15 +40,39 @@ class PaycheckController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Validate the request data
+        $data = $request->validate([
+            'paycheck.date' => 'required|date',
+            'paycheck.amount' => 'required|numeric',
+            'paycheck.expense' => 'required|numeric',
+            'paycheck.balance' => 'required|numeric',
+            'paycheckItems' => 'required|array',
+            'paycheckItems.*.item_name' => 'required|string',
+            'paycheckItems.*.item_amount' => 'required|numeric',
+            'paycheckItems.*.item_type' => 'required|in:income,expense',
+        ]);
+
+        // Create a new Paycheck
+        $paycheck = Paycheck::create($data['paycheck']);
+
+        // Create PaycheckItems
+        foreach ($data['paycheckItems'] as $item) {
+            $paycheck->items()->create($item);
+        }
+
+        return redirect()->route('paychecks.index')->with('success', 'Paycheck created successfully!');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Paycheck $paycheck)
+    public function show($id)
     {
-        //
+        $paycheck = Paycheck::with('items')->findOrFail($id);
+        return inertia('Paycheck/Edit', [
+            'paycheck' => $paycheck,
+            'paycheckItems' => $paycheck->items,
+        ]);
     }
 
     /**
@@ -62,9 +86,33 @@ class PaycheckController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Paycheck $paycheck)
+    public function update(Request $request, $id)
     {
-        //
+        $paycheck = Paycheck::findOrFail($id);
+
+        $validated = $request->validate([
+            'paycheck.date' => 'required|date',
+            'paycheck.amount' => 'required|numeric',
+            'paycheck.expense' => 'required|numeric',
+            'paycheck.balance' => 'required|numeric',
+            'paycheckItems' => 'required|array',
+            'paycheckItems.*.item_name' => 'required|string',
+            'paycheckItems.*.item_amount' => 'required|numeric',
+            'paycheckItems.*.item_type' => 'required|string|in:income,expense',
+        ]);
+
+        // Update paycheck
+        $paycheck->update($validated['paycheck']);
+
+        // Delete existing items
+        $paycheck->items()->delete();
+
+        // Create new items
+        foreach ($validated['paycheckItems'] as $item) {
+            $paycheck->items()->create($item);
+        }
+
+        return redirect()->route('paychecks.index', $id)->with('success', 'Paycheck updated successfully.');
     }
 
     /**

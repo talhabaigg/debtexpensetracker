@@ -1,85 +1,3 @@
-<script setup>
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { Head, Link } from "@inertiajs/vue3";
-import DollarValue from "@/Components/DollarValue.vue"; // Adjust the path as necessary
-import PrimaryButton from "@/Components/PrimaryButton.vue";
-import { ref, computed } from "vue";
-import PieChart from "@/Components/PieChart.vue";
-import { usePercentageComplete } from "@/Composables/usePercentageComplete";
-import ProgressBar from "@/Components/ProgressBar.vue"; // Corrected import statement
-import UnderlineLink from "@/Components/UnderlineLink.vue";
-import DateDisplay from "@/Components/DateDisplay.vue";
-import { Inertia } from "@inertiajs/inertia";
-
-const props = defineProps({
-  paychecks: {
-    type: Array,
-    default: () => [],
-  },
-});
-
-const searchQuery = ref("");
-
-// Reactive state for pagination
-const currentPage = ref(1);
-const itemsPerPage = ref(5);
-
-const percentageComplete = (paycheck) => {
-  return usePercentageComplete(paycheck.amount, paycheck.balance);
-};
-
-// Computed property to filter paychecks based on search query
-const filteredPaychecks = computed(() => {
-  return props.paychecks.filter((paycheck) => {
-    return paycheck.paycheck_date
-      .toLowerCase()
-      .includes(searchQuery.value.toLowerCase());
-  });
-});
-
-// Computed property for paginated paychecks
-const paginatedPaychecks = computed(() => {
-  const start = (currentPage.value - 1) * itemsPerPage.value;
-  const end = start + itemsPerPage.value;
-  return filteredPaychecks.value.slice(start, end);
-});
-
-// Computed property for total pages
-const totalPages = computed(() => {
-  return Math.ceil(filteredPaychecks.value.length / itemsPerPage.value);
-});
-
-// Methods for pagination
-const prevPage = () => {
-  if (currentPage.value > 1) {
-    currentPage.value--;
-  }
-};
-
-const nextPage = () => {
-  if (currentPage.value < totalPages.value) {
-    currentPage.value++;
-  }
-};
-
-const handleDelete = (paycheckId) => {
-  if (confirm("Are you sure you want to delete this paycheck?")) {
-    Inertia.delete(route("paychecks.destroy", paycheckId), {
-      onSuccess: () => {
-        // Handle success, e.g., remove the paycheck from the paginatedPaychecks array
-        props.paychecks = props.paychecks.filter(
-          (paycheck) => paycheck.id !== paycheckId
-        );
-      },
-      onError: () => {
-        // Handle error
-        alert("An error occurred while deleting the paycheck.");
-      },
-    });
-  }
-};
-</script>
-
 <template>
   <Head title="Paychecks" />
 
@@ -150,7 +68,9 @@ const handleDelete = (paycheckId) => {
               class="bg-white dark:bg-gray-900 border-b dark:border-gray-700 hover:bg-gray-300 relative group"
             >
               <td class="px-6 py-4">
-                <UnderlineLink>{{ paycheck.paycheck_date }}</UnderlineLink>
+                <UnderlineLink :href="route('paychecks.show', paycheck.id)">{{
+                  paycheck.date
+                }}</UnderlineLink>
               </td>
               <td class="px-6 py-2">
                 <span
@@ -235,3 +155,82 @@ const handleDelete = (paycheckId) => {
     </div>
   </AuthenticatedLayout>
 </template>
+
+<script setup>
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+import { Head, Link } from "@inertiajs/vue3";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
+import { ref, computed } from "vue";
+import ProgressBar from "@/Components/ProgressBar.vue"; // Corrected import statement
+import UnderlineLink from "@/Components/UnderlineLink.vue";
+import { Inertia } from "@inertiajs/inertia";
+import { usePercentageComplete } from "@/Composables/usePercentageComplete"; // Ensure this composable is available
+
+const props = defineProps({
+  paychecks: {
+    type: Array,
+    default: () => [],
+  },
+});
+
+const searchQuery = ref("");
+
+// Reactive state for pagination
+const currentPage = ref(1);
+const itemsPerPage = ref(5);
+
+const percentageComplete = (paycheck) => {
+  return usePercentageComplete(paycheck.amount, paycheck.balance);
+};
+
+// Computed property to filter paychecks based on search query
+const filteredPaychecks = computed(() => {
+  return props.paychecks.filter((paycheck) => {
+    return paycheck.date
+      .toLowerCase()
+      .includes(searchQuery.value.toLowerCase());
+  });
+});
+
+// Computed property for paginated paychecks
+const paginatedPaychecks = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage.value;
+  const end = start + itemsPerPage.value;
+  return filteredPaychecks.value.slice(start, end);
+});
+
+// Computed property for total pages
+const totalPages = computed(() => {
+  return Math.ceil(filteredPaychecks.value.length / itemsPerPage.value);
+});
+
+// Methods for pagination
+const prevPage = () => {
+  if (currentPage.value > 1) {
+    currentPage.value--;
+  }
+};
+
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++;
+  }
+};
+
+const handleDelete = (paycheckId) => {
+  if (confirm("Are you sure you want to delete this paycheck?")) {
+    Inertia.delete(route("paychecks.destroy", paycheckId), {
+      onSuccess: () => {
+        // Handle success, e.g., remove the paycheck from the paginatedPaychecks array
+        props.paychecks = props.paychecks.filter(
+          (paycheck) => paycheck.id !== paycheckId
+        );
+      },
+      onError: () => {
+        // Handle error
+        alert("An error occurred while deleting the paycheck.");
+      },
+    });
+  }
+};
+</script>

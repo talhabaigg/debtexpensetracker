@@ -5,7 +5,7 @@
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
           Paychecks
         </h2>
-        <Link>
+        <Link href="/manage-budget-items">
           <PrimaryButton>Manage Budget Items</PrimaryButton>
         </Link>
       </div>
@@ -31,9 +31,7 @@
             class="mt-1 block w-3/4"
             v-model="income.name"
           />
-
           <DollarInput v-model.number="income.amount" />
-
           <DangerButton @click="removeIncome(index)">Remove</DangerButton>
         </div>
 
@@ -43,30 +41,13 @@
 
         <h3 class="text-lg font-semibold mt-8 mb-4">Budget Items</h3>
         <div
-          v-for="(item, index) in budgetItems"
+          v-for="(item, index) in expenses"
           :key="index"
           class="flex justify-between space-x-1 mb-2"
         >
-          <h3 class="py-2 text-md font-base">{{ item }}</h3>
-          <DollarInput v-model.number="expenses[index].amount" />
+          <h3 class="py-2 text-md font-base">{{ item.name }}</h3>
+          <DollarInput v-model.number="item.amount" />
         </div>
-
-        <!-- <h3 class="text-lg font-semibold mt-8 mb-4">Expenses</h3>
-        <div
-          v-for="(expense, index) in expenses"
-          :key="index"
-          class="mb-1 flex items-center space-x-4"
-        >
-          <TextInput
-            type="text"
-            class="mt-1 block w-3/4"
-            v-model="expense.name"
-          />
-
-          <DollarInput v-model.number="expense.amount" />
-
-          <DangerButton @click="removeExpense(index)">Remove</DangerButton>
-        </div> -->
 
         <div class="my-2 flex justify-between">
           <PrimaryButton type="submit">Save</PrimaryButton>
@@ -75,9 +56,9 @@
     </div>
   </AuthenticatedLayout>
 </template>
-
-<script setup>
-import { ref, computed } from "vue";
+  
+  <script setup>
+import { ref, computed, watchEffect } from "vue";
 import { useForm, Link } from "@inertiajs/inertia-vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
@@ -85,35 +66,56 @@ import DangerButton from "@/Components/DangerButton.vue";
 import TextInput from "@/Components/TextInput.vue";
 import DollarInput from "@/Components/DollarInput.vue";
 
-const incomes = ref([{ name: "", amount: 0 }]);
+const props = defineProps({
+  paycheck: Object,
+  paycheckItems: Array,
+});
 
-const budgetItems = [
-  "Rent",
-  "Grocery",
-  "Phone Bill",
-  "Internet Bill",
-  "Electricity Bill",
-  "iPad Bill",
-  "Youtube Subscription",
-  "Balance Correction",
-  "Rego",
-  "Car Insurance",
-  "Date Budget",
-  "Fuel",
-  "Personal Takeaway",
-  "Sana Loan",
-  "Zip Money",
-  "NAB Personal Loan",
-  "Tech Gadgets",
-  "Car Fund",
-  "Stake Fund",
-  "Business Account",
-  "GST Witholding",
-  "Credit Card Pay",
-];
+const incomes = ref([]);
+const expenses = ref([]);
 
-// Initialize expenses with same length as budgetItems, default values
-const expenses = ref(budgetItems.map((item) => ({ name: item, amount: 0 })));
+watchEffect(() => {
+  // Initialize incomes and expenses from paycheckItems prop
+  incomes.value = props.paycheckItems
+    .filter((item) => item.item_type === "income")
+    .map((item) => ({ name: item.item_name, amount: item.item_amount }));
+
+  expenses.value = props.paycheckItems
+    .filter((item) => item.item_type === "expense")
+    .map((item) => ({ name: item.item_name, amount: item.item_amount }));
+
+  // Ensure all budget items are initialized
+  const budgetItems = [
+    "Rent",
+    "Grocery",
+    "Phone Bill",
+    "Internet Bill",
+    "Electricity Bill",
+    "iPad Bill",
+    "Youtube Subscription",
+    "Balance Correction",
+    "Rego",
+    "Car Insurance",
+    "Date Budget",
+    "Fuel",
+    "Personal Takeaway",
+    "Sana Loan",
+    "Zip Money",
+    "NAB Personal Loan",
+    "Tech Gadgets",
+    "Car Fund",
+    "Stake Fund",
+    "Business Account",
+    "GST Witholding",
+    "Credit Card Pay",
+  ];
+
+  budgetItems.forEach((item) => {
+    if (!expenses.value.find((exp) => exp.name === item)) {
+      expenses.value.push({ name: item, amount: 0 });
+    }
+  });
+});
 
 const addIncome = () => {
   incomes.value.push({ name: "", amount: 0 });
@@ -121,14 +123,6 @@ const addIncome = () => {
 
 const removeIncome = (index) => {
   incomes.value.splice(index, 1);
-};
-
-const addExpense = () => {
-  expenses.value.push({ name: "", amount: 0 });
-};
-
-const removeExpense = (index) => {
-  expenses.value.splice(index, 1);
 };
 
 const totalIncome = computed(() => {
@@ -146,10 +140,10 @@ const savings = computed(() => {
 // Initialize the form using useForm
 const form = useForm({
   paycheck: {
-    date: new Date().toISOString().split("T")[0], // Default to today's date
-    amount: 0,
-    expense: 0,
-    balance: 0,
+    date: props.paycheck.date,
+    amount: props.paycheck.amount,
+    expense: props.paycheck.expense,
+    balance: props.paycheck.balance,
   },
   paycheckItems: [],
 });
@@ -175,11 +169,11 @@ const submitForm = () => {
   ];
 
   // Submit the form to the Laravel backend
-  form.post(route("paychecks.store"));
+  form.put(route("paychecks.update", { id: props.paycheck.id }));
 };
 </script>
-
-<style scoped>
+  
+  <style scoped>
 .dropdown {
   border: 1px solid #ccc;
   max-height: 150px;
@@ -201,3 +195,4 @@ const submitForm = () => {
   background-color: #ddd;
 }
 </style>
+  

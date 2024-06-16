@@ -13,7 +13,8 @@ class PaycheckController extends Controller
      */
     public function index()
     {
-        $paychecks = Paycheck::all();
+        $paychecks = Paycheck::orderByDesc('created_at')
+        ->paginate(1);
 
 
         // Log the debt and its payments for debugging

@@ -131,10 +131,16 @@
             </tr>
           </tbody>
         </table>
+        <div
+          v-if="paychecks.data.length"
+          class="w-full flex justify-center mt-8 mb-8"
+        >
+          <Pagination :links="paychecks.links" />
+        </div>
       </div>
     </div>
 
-    <div class="flex justify-between items-center p-4 mx-auto max-w-7xl">
+    <!-- <div class="flex justify-between items-center p-4 mx-auto max-w-7xl">
       <button
         @click="prevPage"
         :disabled="currentPage === 1"
@@ -152,7 +158,7 @@
       >
         Next
       </button>
-    </div>
+    </div> -->
   </AuthenticatedLayout>
 </template>
 
@@ -165,10 +171,11 @@ import ProgressBar from "@/Components/ProgressBar.vue"; // Corrected import stat
 import UnderlineLink from "@/Components/UnderlineLink.vue";
 import { Inertia } from "@inertiajs/inertia";
 import { usePercentageComplete } from "@/Composables/usePercentageComplete"; // Ensure this composable is available
+import Pagination from "@/Components/Pagination.vue";
 
 const props = defineProps({
   paychecks: {
-    type: Array,
+    type: Object,
     default: () => [],
   },
 });
@@ -185,7 +192,7 @@ const percentageComplete = (paycheck) => {
 
 // Computed property to filter paychecks based on search query
 const filteredPaychecks = computed(() => {
-  return props.paychecks.filter((paycheck) => {
+  return props.paychecks.data.filter((paycheck) => {
     return paycheck.date
       .toLowerCase()
       .includes(searchQuery.value.toLowerCase());

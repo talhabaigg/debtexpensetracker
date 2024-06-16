@@ -176,7 +176,6 @@ import Pagination from "@/Components/Pagination.vue";
 const props = defineProps({
   paychecks: {
     type: Object,
-    default: () => [],
   },
 });
 

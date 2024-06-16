@@ -12,45 +12,85 @@
     </template>
 
     <div class="max-w-6xl mx-auto mt-2 p-4 bg-white rounded-lg shadow">
-      <div class="mt-8 p-4 bg-gray-100 rounded-lg">
-        <p class="text-lg"><strong>Total Income:</strong> ${{ totalIncome }}</p>
-        <p class="text-lg">
-          <strong>Total Expenses:</strong> ${{ totalExpenses }}
-        </p>
-        <p class="text-lg"><strong>Savings:</strong> ${{ savings }}</p>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 p-4 rounded-lg">
+        <div class="p-4 bg-white rounded-lg shadow-lg">
+          <p class="text-lg">
+            <strong>Total Income:</strong> ${{ totalIncome }}
+          </p>
+        </div>
+        <div class="p-4 bg-white rounded-lg shadow-lg">
+          <p class="text-lg">
+            <strong>Total Expenses:</strong> ${{ totalExpenses }}
+          </p>
+        </div>
+        <div class="p-4 bg-white rounded-lg shadow-lg">
+          <p class="text-lg"><strong>Savings:</strong> ${{ savings }}</p>
+        </div>
       </div>
       <form @submit.prevent="submitForm">
-        <h3 class="text-lg font-semibold mb-4">Income</h3>
-        <div
-          v-for="(income, index) in incomes"
-          :key="index"
-          class="mb-4 flex items-center space-x-1"
-        >
-          <TextInput
-            type="text"
-            class="mt-1 block w-3/4"
-            v-model="income.name"
-          />
-          <DollarInput v-model.number="income.amount" />
-          <DangerButton @click="removeIncome(index)">Remove</DangerButton>
-        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8 p-4 rounded-lg">
+          <div class="col-span-1 space-y-4 my-2">
+            <InputLabel for="date" value="Date" />
+            <TextInput
+              id="date"
+              type="date"
+              v-model="form.paycheck.date"
+              class="w-full"
+            />
+            <h3 class="text-lg font-semibold mb-4">Income</h3>
+            <div
+              v-for="(income, index) in incomes"
+              :key="index"
+              class="mb-2 flex items-center space-x-1"
+            >
+              <TextInput
+                type="text"
+                class="mt-1 block w-3/4"
+                v-model="income.name"
+              />
+              <DollarInput v-model.number="income.amount" />
+              <div
+                @click="removeIncome(index)"
+                class="hover:text-white hover:bg-red-500 py-2 px-2 mt-1 rounded-md"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    fill="currentColor"
+                    d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z"
+                  />
+                </svg>
+              </div>
+            </div>
 
-        <PrimaryButton type="button" @click="addIncome"
-          >Add Income</PrimaryButton
-        >
+            <PrimaryButton type="button" @click="addIncome"
+              >Add Income</PrimaryButton
+            >
+          </div>
+          <div class="col-span-1 space-y-4 my-2">
+            <h3
+              class="text-lg font-semibold mb-4 bg-gray-900 text-white rounded-lg p-2"
+            >
+              Budget Items
+            </h3>
 
-        <h3 class="text-lg font-semibold mt-8 mb-4">Budget Items</h3>
-        <div
-          v-for="(item, index) in expenses"
-          :key="index"
-          class="flex justify-between space-x-1 mb-2"
-        >
-          <h3 class="py-2 text-md font-base">{{ item.name }}</h3>
-          <DollarInput v-model.number="item.amount" />
-        </div>
+            <div
+              v-for="(item, index) in expenses"
+              :key="index"
+              class="flex justify-between space-x-1 px-2"
+            >
+              <h3 class="py-2 text-md font-base">{{ item.name }}</h3>
+              <DollarInput v-model.number="item.amount" />
+            </div>
 
-        <div class="my-2 flex justify-between">
-          <PrimaryButton type="submit">Save</PrimaryButton>
+            <div class="my-2 flex justify-between">
+              <PrimaryButton type="submit">Save</PrimaryButton>
+            </div>
+          </div>
         </div>
       </form>
     </div>
@@ -65,6 +105,8 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import DangerButton from "@/Components/DangerButton.vue";
 import TextInput from "@/Components/TextInput.vue";
 import DollarInput from "@/Components/DollarInput.vue";
+import InputLabel from "@/Components/InputLabel.vue";
+import DeleteIcon from "@/Components/InputLabel.vue";
 
 const props = defineProps({
   paycheck: Object,

@@ -12,14 +12,32 @@
     </template>
 
     <div class="max-w-6xl mx-auto mt-2 p-4 bg-white rounded-lg shadow">
-      <div class="mt-8 p-4 bg-gray-100 rounded-lg">
-        <p class="text-lg"><strong>Total Income:</strong> ${{ totalIncome }}</p>
-        <p class="text-lg">
-          <strong>Total Expenses:</strong> ${{ totalExpenses }}
-        </p>
-        <p class="text-lg"><strong>Savings:</strong> ${{ savings }}</p>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 p-4 rounded-lg">
+        <div class="p-4 bg-white rounded-lg shadow-lg">
+          <p class="text-lg">
+            <strong>Total Income:</strong> ${{ totalIncome }}
+          </p>
+        </div>
+        <div class="p-4 bg-white rounded-lg shadow-lg">
+          <p class="text-lg">
+            <strong>Total Expenses:</strong> ${{ totalExpenses }}
+          </p>
+        </div>
+        <div class="p-4 bg-white rounded-lg shadow-lg">
+          <p class="text-lg"><strong>Savings:</strong> ${{ savings }}</p>
+        </div>
       </div>
       <form @submit.prevent="submitForm">
+        <div class="space-y-4 my-2 w-full">
+          <InputLabel for="date" value="Date" />
+          <TextInput
+            id="date"
+            type="date"
+            class="block w-1/4"
+            v-model="form.paycheck.date"
+          />
+        </div>
+
         <h3 class="text-lg font-semibold mb-4">Income</h3>
         <div
           v-for="(income, index) in incomes"
@@ -31,9 +49,7 @@
             class="mt-1 block w-3/4"
             v-model="income.name"
           />
-
           <DollarInput v-model.number="income.amount" />
-
           <DangerButton @click="removeIncome(index)">Remove</DangerButton>
         </div>
 
@@ -51,23 +67,6 @@
           <DollarInput v-model.number="expenses[index].amount" />
         </div>
 
-        <!-- <h3 class="text-lg font-semibold mt-8 mb-4">Expenses</h3>
-        <div
-          v-for="(expense, index) in expenses"
-          :key="index"
-          class="mb-1 flex items-center space-x-4"
-        >
-          <TextInput
-            type="text"
-            class="mt-1 block w-3/4"
-            v-model="expense.name"
-          />
-
-          <DollarInput v-model.number="expense.amount" />
-
-          <DangerButton @click="removeExpense(index)">Remove</DangerButton>
-        </div> -->
-
         <div class="my-2 flex justify-between">
           <PrimaryButton type="submit">Save</PrimaryButton>
         </div>
@@ -84,6 +83,7 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import DangerButton from "@/Components/DangerButton.vue";
 import TextInput from "@/Components/TextInput.vue";
 import DollarInput from "@/Components/DollarInput.vue";
+import InputLabel from "@/Components/InputLabel.vue";
 
 const incomes = ref([{ name: "", amount: 0 }]);
 
@@ -123,14 +123,6 @@ const removeIncome = (index) => {
   incomes.value.splice(index, 1);
 };
 
-const addExpense = () => {
-  expenses.value.push({ name: "", amount: 0 });
-};
-
-const removeExpense = (index) => {
-  expenses.value.splice(index, 1);
-};
-
 const totalIncome = computed(() => {
   return incomes.value.reduce((total, income) => total + income.amount, 0);
 });
@@ -146,7 +138,7 @@ const savings = computed(() => {
 // Initialize the form using useForm
 const form = useForm({
   paycheck: {
-    date: new Date().toISOString().split("T")[0], // Default to today's date
+    date: new Date().toISOString().substr(0, 10), // Default to today's date
     amount: 0,
     expense: 0,
     balance: 0,
